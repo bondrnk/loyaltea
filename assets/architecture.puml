@@ -1,0 +1,35 @@
+@startuml
+
+allowmixing
+
+!define SERVICE class
+!define DATABASE database
+!define QUEUE queue
+
+package "Loyaltea - Loyalty Program SaaS" {
+    SERVICE Fulfillment <<Python>>
+    SERVICE Rewards <<Python>>
+    SERVICE Campaign <<Scala>>
+    SERVICE Authentication <<Scala>>
+    DATABASE PostgreSQL
+    QUEUE Kafka
+    node GRPC
+
+    Fulfillment -down-> Kafka : sends fulfillment events
+    Kafka -down-> Campaign : streams events
+    Campaign -right-> Rewards : triggers rewards
+    Authentication -left-> Fulfillment : auth requests
+    Authentication -left-> Rewards : auth requests
+    Authentication -down-> PostgreSQL : stores user data
+    PostgreSQL -left-> Campaign : campaign data
+    GRPC -[hidden]-> Authentication
+    GRPC -[hidden]-> Fulfillment
+    GRPC -[hidden]-> Rewards
+    GRPC -[hidden]-> Campaign
+    Authentication -- GRPC
+    Fulfillment -- GRPC
+    Rewards -- GRPC
+    Campaign -- GRPC
+}
+
+@enduml
