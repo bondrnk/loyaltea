@@ -1,28 +1,52 @@
 namespace smithy4s.campaign
 
+use alloy#UUID
 use alloy#simpleRestJson
 
 @simpleRestJson
 service CampaignService {
     version: "0.0.1",
-    operations: [Create]
+    operations: [Create, List]
 }
 
-@http(method: "POST", uri: "/{name}", code: 200)
+@http(method: "POST", uri: "/campaign/{name}", code: 200)
 operation Create {
     input: CreateCampaignRequest,
-    output: Campaign
+    output: CampaignDTO
+}
+
+@http(method: "GET", uri: "/campaign", code: 200)
+operation List {
+    output: CampaignListResponse
 }
 
 structure CreateCampaignRequest {
     @httpLabel
     @required
     name: String,
+    @required
+    fulfillments: Fulfillments
 }
 
-structure Campaign {
+list Fulfillments {
+    member: UUID
+}
+
+
+structure CampaignDTO {
     @required
-    id: String
+    id: UUID
     @required
     name: String
+    @required
+    fulfillments: Fulfillments
+}
+
+structure CampaignListResponse {
+    @required
+    campaigns: CampaignList
+}
+
+list CampaignList {
+    member: CampaignDTO
 }

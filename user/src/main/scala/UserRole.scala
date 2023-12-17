@@ -1,6 +1,6 @@
 package loyaltea
 
-import api.CampaignApi
+import api.UserApi
 import http.HttpServer
 import plugins.*
 import scala.annotation.unused
@@ -17,28 +17,28 @@ import izumi.fundamentals.platform.cli.model.raw.*
 import logstage.*
 import zio.*
 
-final class CampaignRole(
+final class UserRole(
     @unused runningServer: HttpServer,
     log: LogIO[Task],
 ) extends RoleService[Task] {
   override def start(roleParameters: RawEntrypointParams, freeArgs: Vector[String]): Lifecycle[Task, Unit] = {
-    Lifecycle.liftF(log.info("Campaign API started!"))
+    Lifecycle.liftF(log.info("User API started!"))
   }
 }
-object CampaignRole extends RoleDescriptor {
-  final val id = "campaign"
+object UserRole extends RoleDescriptor {
+  final val id = "user"
 }
 
-// ./launcher -u repo:dummy :campaign
-object MainDummy extends MainBase(Activation(Repo -> Repo.Dummy), Vector(RawRoleParams(CampaignRole.id)))
+// ./launcher -u repo:dummy :user
+object MainDummy extends MainBase(Activation(Repo -> Repo.Dummy), Vector(RawRoleParams(UserRole.id)))
 
-// ./launcher -u scene:managed :campaign
+// ./launcher -u scene:managed :user
 object MainProdDocker
-    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Managed), Vector(RawRoleParams(CampaignRole.id)))
+    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Managed), Vector(RawRoleParams(UserRole.id)))
 
-// ./launcher :campaign
+// ./launcher :user
 object MainProd
-    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Provided), Vector(RawRoleParams(CampaignRole.id)))
+    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Provided), Vector(RawRoleParams(UserRole.id)))
 
 // ./launcher :configwriter
 object MainWriteReferenceConfigs
@@ -75,7 +75,7 @@ sealed abstract class MainBase(
   override def pluginConfig: PluginConfig = {
     if (IzPlatform.isGraalNativeImage) {
       // Only this would work reliably for NativeImage
-      PluginConfig.const(List(CampaignPlugin, PostgresDockerPlugin))
+      PluginConfig.const(List(UserPlugin, PostgresDockerPlugin))
     } else {
       // Runtime discovery with PluginConfig.cached might be convenient for pure jvm projects during active development
       // Once the project gets to the maintenance stage it's a good idea to switch to PluginConfig.const

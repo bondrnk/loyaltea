@@ -16,10 +16,10 @@ import doobie.util.transactor.Transactor
 import izumi.distage.roles.bundled.BundledRolesModule
 import izumi.distage.roles.model.definition.RoleModuleDef
 import izumi.fundamentals.platform.integration.PortCheck
-import smithy4s.campaign.*
+import smithy4s.user.*
 import zio.*
 
-object CampaignPlugin extends PluginDef {
+object UserPlugin extends PluginDef {
   include(modules.roles)
   include(modules.api)
   include(modules.repoDummy)
@@ -29,20 +29,20 @@ object CampaignPlugin extends PluginDef {
 
   object modules {
     def roles: RoleModuleDef = new RoleModuleDef {
-      // The `campaign` role
-      makeRole[CampaignRole]
+      // The `user` role
+      makeRole[UserRole]
       // Add bundled roles: `help` & `configwriter`
       include(BundledRolesModule[Task](version = "1.0.0"))
     }
 
     def api: ModuleDef = new ModuleDef {
-      // The `campaign` API
-      make[CampaignApi]
+      // The `user` API
+      make[UserApi]
       make[SwaggerApi]
-      make[CampaignService[Task]].from[CampaignServiceImpl]
+      make[UserService[Task]].from[UserServiceImpl]
 
       many[HttpApi]
-        .add[CampaignApi]
+        .add[UserApi]
         .add[SwaggerApi]
 
       make[HttpServer].fromResource[HttpServer.Impl]
@@ -51,13 +51,13 @@ object CampaignPlugin extends PluginDef {
     def repoDummy: ModuleDef = new ModuleDef {
       tag(Repo.Dummy)
 
-      make[CampaignRepo].from[CampaignRepo.Dummy]
+      make[UserRepo].from[UserRepo.Dummy]
     }
 
     def repoProd: ModuleDef = new ModuleDef {
       tag(Repo.Prod)
 
-      make[CampaignRepo].from[CampaignRepo.Postgres]
+      make[UserRepo].from[UserRepo.Postgres]
       make[Transactor[Task]].fromResource[TransactorResource[Task]]
       make[PortCheck].from(new PortCheck(3.seconds))
     }

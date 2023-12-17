@@ -6,8 +6,9 @@ val V = new {
   val Smithy    = "0.18.3"
   val Circe     = "0.14.6"
   val Mockito   = "5.8.0"
-  val Http4s    = "0.23.6"
+  val Http4s    = "0.23.24"
   val Zio       = "2.0.20"
+  val ZioKafka  = "2.7.1"
   val ZioCats   = "23.1.0.0"
   val Chimney   = "0.8.3"
   val Jwt       = "9.4.5"
@@ -18,8 +19,8 @@ val V = new {
 
 inThisBuild(
   List(
-    scalaVersion := V.Scala,
-    organization := "loyaltea",
+    scalaVersion     := V.Scala,
+    organization     := "loyaltea",
     organizationName := "loyaltea",
     idePackagePrefix := Some("loyaltea"),
   )
@@ -48,7 +49,14 @@ lazy val zioDeps = Set(
   "dev.zio" %% "zio-interop-cats"  % V.ZioCats,
   "dev.zio" %% "zio-test"          % V.Zio % "test",
   "dev.zio" %% "zio-test-sbt"      % V.Zio % "test",
-  "dev.zio" %% "zio-test-magnolia" % V.Zio % "test", // optional
+  "dev.zio" %% "zio-test-magnolia" % V.Zio % "test",// optional
+)
+
+lazy val kafkaDeps = Seq(
+  "dev.zio" %% "zio-kafka"         % V.ZioKafka,
+  ("dev.zio" %% "zio-kafka-testkit" % V.ZioKafka % Test)
+    .exclude("org.scala-lang.modules", "scala-java8-compat_2.13")
+    .exclude("com.typesafe.scala-logging", "scala-logging_2.13"),
 )
 
 lazy val izumiDeps = Seq(
@@ -84,9 +92,9 @@ lazy val http4sDeps = Seq(
 
 lazy val root = (project in file("."))
   .settings(
-    name := "user",
+    name             := "user",
     idePackagePrefix := Some("loyaltea"),
-    scalacOptions ++= Seq("-Ykind-projector", "-Ykind-projector:underscores"),
+    scalacOptions ++= Seq("-Yretain-trees", "-Ykind-projector:underscores"),
     Universal / javaOptions ++= Seq("-u repo:dummy"),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   )
@@ -94,5 +102,5 @@ lazy val root = (project in file("."))
   .enablePlugins(DockerPlugin)
   .enablePlugins(smithy4s.codegen.Smithy4sCodegenPlugin)
   .settings(
-    libraryDependencies ++= coreDeps ++ zioDeps ++ smithyDeps ++ http4sDeps ++ izumiDeps ++ postgresDeps
+    libraryDependencies ++= coreDeps ++ zioDeps ++ smithyDeps ++ http4sDeps ++ izumiDeps ++ postgresDeps ++ kafkaDeps
   )

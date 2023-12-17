@@ -1,26 +1,21 @@
 package loyaltea
 package api
 
-import io.circe.syntax.*
-import izumi.functional.bio.IO2
-import izumi.functional.bio.catz.*
-import org.http4s.HttpRoutes
-import org.http4s.circe.*
-import org.http4s.dsl.Http4sDsl
+import model.*
+import repo.CampaignRepo
+
+import io.scalaland.chimney.dsl.*
+import smithy4s.campaign.*
 import zio.*
 
-//final class CampaignApiImpl() extends CampaignService
+import java.util.UUID
 
-final class CampaignApi(
-  dsl: Http4sDsl[Task],
-) extends HttpApi {
+final class CampaignApi(service: CampaignService[Task]) extends HttpApi(service)
 
-  import dsl.*
+final class CampaignServiceImpl(repo: CampaignRepo) extends CampaignService[Task] {
+  override def create(name: String, fulfillments: List[UUID]): Task[CampaignDTO] =
+    repo.create(Campaign(UUID.randomUUID(), name, fulfillments)).map(_.transformInto[CampaignDTO])
 
-  override def http: HttpRoutes[Task] = {
-    HttpRoutes.of {
-      case GET -> Root / "campaign" =>
-        Ok()
-    }
-  }
+  override def list(): Task[CampaignListResponse] =
+    repo.list().map(campaigns => CampaignListResponse(campaigns.map(_.transformInto[CampaignDTO])))
 }
