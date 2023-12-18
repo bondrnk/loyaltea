@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+import logging
 import os
 import sys
 
+log_level = logging.INFO
+logging.basicConfig(level=log_level)
+log = logging.getLogger('kafka')
+log.setLevel(log_level)
 
 def main():
     """Run administrative tasks."""
