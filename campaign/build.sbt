@@ -2,6 +2,7 @@ val V = new {
   val Scala     = "3.3.1"
   val Izumi     = "1.2.3"
   val Quill     = "4.8.0"
+  val Flyway    = "7.8.2"
   val Doobie    = "1.0.0-RC2"
   val Smithy    = "0.18.3"
   val Circe     = "0.14.6"
@@ -53,7 +54,7 @@ lazy val zioDeps = Set(
 )
 
 lazy val kafkaDeps = Seq(
-  "dev.zio" %% "zio-kafka"         % V.ZioKafka,
+  "dev.zio"  %% "zio-kafka"         % V.ZioKafka,
   ("dev.zio" %% "zio-kafka-testkit" % V.ZioKafka % Test)
     .exclude("org.scala-lang.modules", "scala-java8-compat_2.13")
     .exclude("com.typesafe.scala-logging", "scala-logging_2.13"),
@@ -81,6 +82,7 @@ lazy val postgresDeps = Seq(
   "org.tpolecat" %% "doobie-hikari"   % V.Doobie,
   "io.getquill"  %% "quill-jdbc-zio"  % V.Quill,
   "io.getquill"  %% "quill-doobie"    % V.Quill,
+  "org.flywaydb"  % "flyway-core"     % V.Flyway,
 )
 
 lazy val http4sDeps = Seq(
