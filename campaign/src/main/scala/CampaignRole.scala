@@ -1,6 +1,6 @@
 package loyaltea
 
-import api.CampaignApi
+import consumers.Consumers
 import http.HttpServer
 import plugins.*
 import scala.annotation.unused
@@ -19,10 +19,11 @@ import zio.*
 
 final class CampaignRole(
     @unused runningServer: HttpServer,
+    consumers: Consumers,
     log: LogIO[Task],
 ) extends RoleService[Task] {
   override def start(roleParameters: RawEntrypointParams, freeArgs: Vector[String]): Lifecycle[Task, Unit] = {
-    Lifecycle.liftF(log.info("Campaign API started!"))
+    Lifecycle.liftF(consumers.startAllFork *> log.info("Campaign API started!"))
   }
 }
 object CampaignRole extends RoleDescriptor {
@@ -31,10 +32,6 @@ object CampaignRole extends RoleDescriptor {
 
 // ./launcher -u repo:dummy :campaign
 object MainDummy extends MainBase(Activation(Repo -> Repo.Dummy), Vector(RawRoleParams(CampaignRole.id)))
-
-// ./launcher -u scene:managed :campaign
-object MainProdDocker
-    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Managed), Vector(RawRoleParams(CampaignRole.id)))
 
 // ./launcher :campaign
 object MainProd
@@ -75,7 +72,7 @@ sealed abstract class MainBase(
   override def pluginConfig: PluginConfig = {
     if (IzPlatform.isGraalNativeImage) {
       // Only this would work reliably for NativeImage
-      PluginConfig.const(List(CampaignPlugin, PostgresDockerPlugin))
+      PluginConfig.const(List(CampaignPlugin))
     } else {
       // Runtime discovery with PluginConfig.cached might be convenient for pure jvm projects during active development
       // Once the project gets to the maintenance stage it's a good idea to switch to PluginConfig.const

@@ -3,10 +3,11 @@ package plugins
 
 import api.*
 import config.*
+import consumers.*
 import http.HttpServer
+import producers.*
 import repo.*
 import scala.concurrent.duration.*
-import sql.*
 
 import distage.StandardAxis.Repo
 import distage.config.ConfigModuleDef
@@ -25,7 +26,6 @@ object CampaignPlugin extends PluginDef {
   include(modules.repoDummy)
   include(modules.repoProd)
   include(modules.configs)
-  include(modules.prodConfigs)
 
   object modules {
     def roles: RoleModuleDef = new RoleModuleDef {
@@ -37,13 +37,16 @@ object CampaignPlugin extends PluginDef {
 
     def api: ModuleDef = new ModuleDef {
       // The `campaign` API
-      make[CampaignApi]
-      make[SwaggerApi]
+      make[Consumers]
+      make[Producers]
+      make[CampaignHttpApi]
+      make[CampaignApi].from[CampaignApi.Live]
+      make[SwaggerHttpApi]
       make[CampaignService[Task]].from[CampaignServiceImpl]
 
       many[HttpApi]
-        .add[CampaignApi]
-        .add[SwaggerApi]
+        .add[CampaignHttpApi]
+        .add[SwaggerHttpApi]
 
       make[HttpServer].fromResource[HttpServer.Impl]
     }
@@ -52,24 +55,22 @@ object CampaignPlugin extends PluginDef {
       tag(Repo.Dummy)
 
       make[CampaignRepo].from[CampaignRepo.Dummy]
+      make[UserCampaignRepo].from[UserCampaignRepo.Dummy]
     }
 
     def repoProd: ModuleDef = new ModuleDef {
       tag(Repo.Prod)
 
+      make[DatabaseTemplate]
       make[CampaignRepo].from[CampaignRepo.Postgres]
-      make[Transactor[Task]].fromResource[TransactorResource[Task]]
+      make[UserCampaignRepo].from[UserCampaignRepo.Postgres]
+      make[Transactor[Task]].fromResource[TransactorResource]
       make[PortCheck].from(new PortCheck(3.seconds))
     }
 
-    val configs: ConfigModuleDef     = new ConfigModuleDef {
+    val configs: ConfigModuleDef = new ConfigModuleDef {
       makeConfig[PostgresCfg]("postgres")
-    }
-    val prodConfigs: ConfigModuleDef = new ConfigModuleDef {
-      // only use this if Scene axis is set to Provided
-      tag(Scene.Provided)
-
-      makeConfig[PostgresPortCfg]("postgres")
+      makeConfig[KafkaCfg]("kafka")
     }
   }
 }
