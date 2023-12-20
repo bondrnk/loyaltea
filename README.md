@@ -8,6 +8,11 @@
 # loyaltea
 Loyaltea - a loyalty program SAAS. Having loyal clients is as easy as drinking cup of tea!
 ## About
+Hi, our names are Hanna Bondarenko and Oleh Dubynskyi and this is project that presents POC of loyalty program solution as a service.
+The architecture of the project is built around Event Driven approach where services interact with each other only by using events.
+We tried to preserve Onion architecture and organise our codebase by layers. 
+Each service isolates his Domain from others this was intended to replicate DDD approach.
+Services provide simple REST API to interact with them + API Docs like Swagger.
 The project consists of a list of dockerized services written in Python and Scala, 
 services communicate using Kafka and store their data in PostgreSQL database.
 Python services are written with Django framework, Django ORM(psycopg), Django REST Framework and kafka-python.
