@@ -8,28 +8,20 @@ allowmixing
 
 package "Loyaltea - Loyalty Program SaaS" {
     SERVICE Fulfillment <<Python>>
-    SERVICE Rewards <<Python>>
+    SERVICE Reward <<Python>>
     SERVICE Campaign <<Scala>>
-    SERVICE Authentication <<Scala>>
+    SERVICE User <<Scala>>
     DATABASE PostgreSQL
     QUEUE Kafka
-    node GRPC
 
-    Fulfillment -down-> Kafka : sends fulfillment events
-    Kafka -down-> Campaign : streams events
-    Campaign -right-> Rewards : triggers rewards
-    Authentication -left-> Fulfillment : auth requests
-    Authentication -left-> Rewards : auth requests
-    Authentication -down-> PostgreSQL : stores user data
-    PostgreSQL -left-> Campaign : campaign data
-    GRPC -[hidden]-> Authentication
-    GRPC -[hidden]-> Fulfillment
-    GRPC -[hidden]-> Rewards
-    GRPC -[hidden]-> Campaign
-    Authentication -- GRPC
-    Fulfillment -- GRPC
-    Rewards -- GRPC
-    Campaign -- GRPC
+    Fulfillment --> Kafka : Produce fulfillment events
+    Kafka --> Campaign : Consume Fulfillment events
+    Kafka <- Campaign : Produce Reward events
+    Kafka --> Reward : Consume Reward events
+    PostgreSQL <-up-> Fulfillment
+    PostgreSQL <-left-> Campaign
+    PostgreSQL <-down-> Reward
+    PostgreSQL <-right-> User
 }
 
 @enduml

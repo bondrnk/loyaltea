@@ -4,7 +4,7 @@ package http
 import api.HttpApi
 
 import cats.implicits.*
-import com.comcast.ip4s.Port
+import com.comcast.ip4s.{Port, Host}
 import fs2.io.net.Network
 import izumi.distage.model.definition.Lifecycle
 import org.http4s.ember.server.EmberServerBuilder
@@ -26,6 +26,7 @@ object HttpServer {
           EmberServerBuilder
             .default[Task](asyncInstance, Network.forAsync)
             .withHttpApp(combinedApis.orNotFound)
+            .withHostOption(Host.fromString("0.0.0.0"))
             .withPort(Port.fromInt(8080).get)
             .withIdleTimeout(Duration.Infinity.asScala)
             .build
