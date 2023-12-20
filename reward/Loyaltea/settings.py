@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import environ
 from pathlib import Path
 
+env = environ.Env()
+env.smart_cast = False
+environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,13 +82,21 @@ WSGI_APPLICATION = 'Loyaltea.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'loyaltea',
-        'USER': 'admin',
-        'PASSWORD': 'nimda',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
     }
 }
+
+
+KAFKA = {
+    'HOST': env('KAFKA_HOST'),
+    'PORT': env('KAFKA_PORT')
+}
+
+KAFKA_BOOTSTRAP_SERVERS = [f'{KAFKA["HOST"]}:{KAFKA["PORT"]}']
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

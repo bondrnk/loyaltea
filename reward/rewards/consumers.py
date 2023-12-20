@@ -2,6 +2,7 @@ import logging
 
 from kafka import KafkaConsumer
 
+from Loyaltea.settings import KAFKA_BOOTSTRAP_SERVERS
 from rewards.events import RewardEvent, RewardNotifyEvent
 from rewards.models import Reward, UserReward
 from rewards.producers import producer
@@ -11,7 +12,7 @@ def run():
     logger = logging.getLogger("consumers.reward")
     consumer = KafkaConsumer('reward',
                              group_id='reward-group',
-                             bootstrap_servers=['localhost:9092'])
+                             bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
 
     logger.info("Reward Consumer started")
 

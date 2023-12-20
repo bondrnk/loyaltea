@@ -4,6 +4,7 @@ from typing import Callable
 
 from kafka import KafkaConsumer
 
+from Loyaltea.settings import KAFKA_BOOTSTRAP_SERVERS
 from fulfillments.events import BuyEvent
 from fulfillments.services.BuyFulfillmentService import BuyFulfillmentService
 
@@ -33,7 +34,7 @@ class ForkedKafkaConsumer():
 class BuyFulfillmentConsumer():
     def __init__(self, service: BuyFulfillmentService):
         self.service = service
-        consumer = KafkaConsumer('buy', group_id='buy-fulfillment-group', bootstrap_servers=['localhost:9092'])
+        consumer = KafkaConsumer('buy', group_id='buy-fulfillment-group', bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
         self.consumer = ForkedKafkaConsumer("buy-fulfillment", consumer, self.process)
 
     def process(self, message):
