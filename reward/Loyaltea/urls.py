@@ -23,6 +23,7 @@ from rewards import views
 
 router = routers.DefaultRouter()
 router.register(r'rewards', views.RewardViewSet)
+router.register(r'user-rewards', views.UserRewardViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
