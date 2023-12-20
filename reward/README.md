@@ -12,3 +12,8 @@ rm -rf fulfillments/migrations
 python manage.py makemigrations fulfillments
 python manage.py migrate fulfillments
 ```
+
+## Build Docker
+```bash
+docker build -t reward:0.0.1 . 
+```

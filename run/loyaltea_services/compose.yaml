@@ -12,6 +12,33 @@ services:
     environment:
       POSTGRES_HOST: postgres
       KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+
+  reward:
+    image: reward:0.0.1
+    hostname: reward
+    container_name: reward
+    ports:
+      - "9002:8000"
+    networks:
+      - loyaltea_infra_proxy
+    environment:
+      DATABASE_HOST: postgres
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+
+  fulfillment:
+    image: fulfillment:0.0.1
+    hostname: fulfillment
+    container_name: fulfillment
+    ports:
+      - "9003:8000"
+    networks:
+      - loyaltea_infra_proxy
+    environment:
+      DATABASE_HOST: postgres
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
 
 networks:
   loyaltea_infra_proxy:
