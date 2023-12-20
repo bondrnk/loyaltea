@@ -8,7 +8,7 @@ from rewards.producers import producer
 
 
 def run():
-    logger = logging.getLogger("reward.consumer")
+    logger = logging.getLogger("consumers.reward")
     consumer = KafkaConsumer('reward',
                              group_id='reward-group',
                              bootstrap_servers=['localhost:9092'])

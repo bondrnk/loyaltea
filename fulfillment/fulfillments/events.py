@@ -5,17 +5,17 @@ from dataclasses_json import LetterCase, DataClassJsonMixin, config
 
 
 @dataclass
-class RewardEvent(DataClassJsonMixin):
+class FulfillmentEvent(DataClassJsonMixin):
     dataclass_json_config = config(letter_case=LetterCase.CAMEL)["dataclasses_json"]
     tenant: str
-    reward_id: UUID
     user_id: UUID
+    fulfillment_id: UUID
 
 
 @dataclass
-class RewardNotifyEvent(DataClassJsonMixin):
+class BuyEvent(DataClassJsonMixin):
     dataclass_json_config = config(letter_case=LetterCase.CAMEL)["dataclasses_json"]
     tenant: str
-    reward_id: UUID
     user_id: UUID
-    points: float
+    product: str
+    amount: float

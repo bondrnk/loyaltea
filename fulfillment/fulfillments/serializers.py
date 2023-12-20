@@ -1,9 +1,15 @@
 from rest_framework import serializers
 
-from fulfillments.models import Fulfillment
+from fulfillments.models import TagFulfillment, BuyFulfillment
 
 
-class FulfillmentSerializer(serializers.HyperlinkedModelSerializer):
+class TagFulfillmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Fulfillment
-        fields = ['name', 'tenant', 'campaign', 'type']
+        model = TagFulfillment
+        fields = '__all__'
+
+
+class BuyFulfillmentSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = BuyFulfillment
+        fields = '__all__'

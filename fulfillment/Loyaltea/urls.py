@@ -22,7 +22,8 @@ from fulfillments import views
 
 
 router = routers.DefaultRouter()
-router.register(r'fulfillments', views.FulfillmentViewSet)
+router.register(r'buy-fulfillments', views.BuyFulfillmentViewSet)
+router.register(r'tag-fulfillments', views.TagFulfillmentViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
