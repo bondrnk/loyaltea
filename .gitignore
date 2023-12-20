@@ -22,5 +22,3 @@ project/metals.sbt
 *.iml
 
 */.loyaltea
-
-*/.loyaltea
