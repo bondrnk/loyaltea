@@ -6,8 +6,10 @@ import zio.kafka.consumer.*
 import zio.kafka.producer.*
 
 case class KafkaCfg(
-    bootstrapServers: List[String]
+    host: String,
+    port: Int,
 ) {
+  val bootstrapServers: List[String] = List(s"$host:$port")
   def toConsumerLayer(groupId: String) = ZLayer.scoped(
     Consumer.make(
       ConsumerSettings(bootstrapServers).withGroupId(groupId)

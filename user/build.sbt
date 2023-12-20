@@ -95,12 +95,14 @@ lazy val root = (project in file("."))
     name             := "user",
     idePackagePrefix := Some("loyaltea"),
     scalacOptions ++= Seq("-Yretain-trees", "-Ykind-projector:underscores"),
-    Universal / javaOptions ++= Seq("-u repo:dummy"),
+    Universal / javaOptions ++= Seq(":campaign"),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   )
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(DockerPlugin)
   .enablePlugins(smithy4s.codegen.Smithy4sCodegenPlugin)
   .settings(
+    dockerBaseImage := "adoptopenjdk:11-jre-hotspot",
+    dockerExposedPorts := Seq(8080, 8080),
     libraryDependencies ++= coreDeps ++ zioDeps ++ smithyDeps ++ http4sDeps ++ izumiDeps ++ postgresDeps ++ kafkaDeps
   )
