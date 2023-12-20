@@ -31,33 +31,8 @@ object CampaignRole extends RoleDescriptor {
 }
 
 // ./launcher -u repo:dummy :campaign
-object MainDummy extends MainBase(Activation(Repo -> Repo.Dummy), Vector(RawRoleParams(CampaignRole.id)))
-
 // ./launcher :campaign
-object MainProd
-    extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Provided), Vector(RawRoleParams(CampaignRole.id)))
-
 // ./launcher :configwriter
-object MainWriteReferenceConfigs
-    extends MainBase(
-      activation = {
-        Activation(Repo -> Repo.Prod, Scene -> Scene.Provided)
-      },
-      requiredRoles = {
-        Vector(
-          RawRoleParams(
-            role = ConfigWriter.id,
-            roleParameters = RawEntrypointParams(
-              flags = Vector.empty,
-              // output configs in "hocon" format, instead of "json"
-              values = Vector(RawValue("format", "hocon")),
-            ),
-            freeArgs = Vector.empty,
-          )
-        )
-      },
-    )
-
 object GenericLauncher extends MainBase(Activation(Repo -> Repo.Prod, Scene -> Scene.Provided), Vector.empty)
 
 sealed abstract class MainBase(

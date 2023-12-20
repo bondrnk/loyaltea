@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  campaign:
+    image: campaign:0.0.1-SNAPSHOT
+    hostname: campaign
+    container_name: campaign
+    ports:
+      - "9001:8080"
+    networks:
+      - loyaltea_infra_proxy
+    environment:
+      POSTGRES_HOST: postgres
+      KAFKA_HOST: kafka
+
+networks:
+  loyaltea_infra_proxy:
+    external:
+      name: loyaltea_infra_network

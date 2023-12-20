@@ -1,4 +1,8 @@
-version: '3'
+version: '3.5'
+
+networks:
+  loyaltea_infra_proxy:
+    name: loyaltea_infra_network
 
 services:
   zookeeper:
@@ -11,6 +15,9 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zookeeper:2888:3888
+    networks:
+      - loyaltea_infra_proxy
+
 
   kafka:
     image: confluentinc/cp-kafka:7.3.2
@@ -35,6 +42,8 @@ services:
       KAFKA_CREATE_TOPICS: "reward:1:1,fulfillment:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - loyaltea_infra_proxy
 
   kafka-ui:
     container_name: kafka-ui
@@ -49,6 +58,8 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
       KAFKA_CLUSTERS_0_METRICS_PORT: 9999
       DYNAMIC_CONFIG_ENABLED: 'true'
+    networks:
+      - loyaltea_infra_proxy
 
   postgres:
     image: postgres
@@ -60,6 +71,8 @@ services:
       POSTGRES_PASSWORD: nimda
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - loyaltea_infra_proxy
 
 volumes:
   postgres-data:
