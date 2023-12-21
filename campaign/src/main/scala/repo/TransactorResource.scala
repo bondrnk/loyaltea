@@ -4,7 +4,7 @@ package repo
 import config.*
 import scala.concurrent.ExecutionContext
 
-import cats.effect.{Async, Resource, Sync}
+import cats.effect.{Resource, Sync}
 import distage.{Id, Lifecycle}
 import doobie.Transactor
 import doobie.hikari.HikariTransactor

@@ -38,7 +38,7 @@ object CampaignRepo {
     import template.*
     import io.getquill.*
     import io.getquill.extras._
-    inline def campaigns = quote(querySchema[Campaign]("campaigns"))
+    private inline def campaigns = quote(querySchema[Campaign]("campaigns"))
     def create(campaign: Campaign): Task[Campaign] =
       run(campaigns.insertValue(lift(campaign)).onConflictIgnore).transact.as(campaign)
 
@@ -48,7 +48,7 @@ object CampaignRepo {
     def list(query: CampaignQuery, page: PageQuery): Task[List[Campaign]]               = run {
       campaigns.dynamic
         .filterOpt(query.campaignId)((e, id) => quote(e.id === unquote(id)))
-        .filterOpt(query.fulfillmentId)((e, fulfillmentId) => quote(e.fulfillments.contains(fulfillmentId)))
+        .filterOpt(query.fulfillmentId)((e, id) => quote(e.fulfillments.contains(unquote(id))))
         .takeOpt(page.size)
         .dropOpt(page.offset)
     }.transact

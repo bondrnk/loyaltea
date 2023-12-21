@@ -8,11 +8,11 @@ create table if not exists campaigns
     primary key (id)
 );
 
-create table if not exists "user-campaigns"
+create table if not exists user_campaigns
 (
     tenant       varchar not null,
-    campaignId   uuid    not null,
-    userId       uuid    not null,
+    campaign_id  uuid    not null,
+    user_id      uuid    not null,
     fulfillments uuid[]  not null,
-    primary key (campaignId, userId)
+    primary key (campaign_id, user_id)
 );
